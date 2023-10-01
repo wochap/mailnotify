@@ -48,7 +48,7 @@ func main() {
 		iconPath = os.Args[2]
 	}
 
-    expireTimeout := 5
+    expireTimeout := time.Millisecond * -1
 	if len(os.Args) > 3 {
 		argInt, err := strconv.Atoi(os.Args[3])
 		if err != nil {
