@@ -49,16 +49,13 @@ func main() {
 	}
 
     expireTimeout := 5
-    if len(os.Args) > 3 {
-		argValue := os.Args[3]
-		// Attempt to convert the command-line argument to an integer
-		argInt, err := strconv.Atoi(argValue)
-		if err == nil {
-			expireTimeout = argInt
-		} else {
-			fmt.Println("Invalid integer argument provided.")
+	if len(os.Args) > 3 {
+		argInt, err := strconv.Atoi(os.Args[3])
+		if err != nil {
+			fmt.Println("Invalid integer argument provided:", err)
 			return
 		}
+		expireTimeout = argInt
 	}
 
 	done := make(chan bool)
@@ -104,7 +101,7 @@ func main() {
 					Summary:       email.Subject,
 					Body:          body,
 					Hints:         map[string]dbus.Variant{},
-					ExpireTimeout: time.Second * expireTimeout,
+					ExpireTimeout: time.Second * time.Duration(expireTimeout),
 				}
 
 				createdID, err := notify.SendNotification(conn, n)
