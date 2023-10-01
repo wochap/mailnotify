@@ -7,7 +7,6 @@ import (
 	"regexp"
 	"strings"
 	"time"
-    "strconv"
 
 	"github.com/DusanKasan/parsemail"
 	"github.com/dietsche/rfsnotify"
@@ -46,16 +45,6 @@ func main() {
 	iconPath := ""
 	if len(os.Args) > 2 {
 		iconPath = os.Args[2]
-	}
-
-    expireTimeout := time.Millisecond * -1
-	if len(os.Args) > 3 {
-		argInt, err := strconv.Atoi(os.Args[3])
-		if err != nil {
-			fmt.Println("Invalid integer argument provided:", err)
-			return
-		}
-		expireTimeout = argInt
 	}
 
 	done := make(chan bool)
@@ -101,7 +90,7 @@ func main() {
 					Summary:       email.Subject,
 					Body:          body,
 					Hints:         map[string]dbus.Variant{},
-					ExpireTimeout: time.Second * time.Duration(expireTimeout),
+					ExpireTimeout: time.Millisecond * -1,
 				}
 
 				createdID, err := notify.SendNotification(conn, n)
