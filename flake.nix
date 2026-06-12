@@ -31,7 +31,7 @@
 
               propagatedBuildInputs = [ pkgs.libnotify ];
 
-              vendorHash = "sha256-UQVGX9G//ksoNJTQtVFJLiIL5z97wChNgAwP+DN/mus=";
+              vendorHash = "sha256-8COiuVhQQ8aBDT5/q8Pt6ZTGbB3+xKDlKVA3BsFkF/A=";
             };
             default = mailnotify;
           };
