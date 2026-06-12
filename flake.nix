@@ -3,26 +3,46 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
+    flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    (flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = import nixpkgs { system = system; };
-      in rec {
-        packages.mailnotify = pkgs.buildGoModule {
-          pname = "mailnotify";
-          version = "unstable-2023-12-14";
-          src = self;
+  outputs =
+    inputs@{
+      self,
+      nixpkgs,
+      flake-parts,
+    }:
+    (flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" ];
+      perSystem =
+        {
+          pkgs,
+          system,
+          ...
+        }:
+        {
+          _module.args.pkgs = import inputs.nixpkgs { inherit system; };
 
-          propagatedBuildInputs = [ pkgs.libnotify ];
+          packages = rec {
+            mailnotify = pkgs.buildGoModule {
+              pname = "mailnotify";
+              version = "unstable-2026-06-12";
+              src = self;
 
-          vendorHash = "sha256-Mj1vte+bnDmY/tn6+GXX9IwIKgy9J4QvoIP/pLcID6E=";
+              propagatedBuildInputs = [ pkgs.libnotify ];
+
+              vendorHash = "sha256-UQVGX9G//ksoNJTQtVFJLiIL5z97wChNgAwP+DN/mus=";
+            };
+            default = mailnotify;
+          };
+
+          devShells.default = pkgs.mkShell {
+            buildInputs = with pkgs; [
+              go
+              libnotify
+              pre-commit
+            ];
+          };
         };
-        defaultPackage = packages.mailnotify;
-
-        devShells.default = pkgs.mkShell {
-          packages = with pkgs; [ libnotify go gotools gopls yq ];
-        };
-      }));
+    });
 }
