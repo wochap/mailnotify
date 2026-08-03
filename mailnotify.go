@@ -85,7 +85,7 @@ func main() {
 				Summary:       email.Subject,
 				Body:          body,
 				Hints:         map[string]dbus.Variant{},
-				ExpireTimeout: time.Second * 5,
+				ExpireTimeout: time.Second * -1,
 			}
 
 			createdID, err := notify.SendNotification(conn, n)
